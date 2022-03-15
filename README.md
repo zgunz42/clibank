@@ -1,6 +1,6 @@
-# clibank
+# 🏦 clibank
 
-An cli base bank using mysql as database
+An CLI base bank using mysql as database
 
 Resources
 1. [ERD Database](https://drawsql.app/next-bigit/diagrams/cli-bank)
