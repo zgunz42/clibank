@@ -55,11 +55,11 @@ Flow membuat feature:
 
 ## Troubeshooting
 Beberapa masalah umum dalam pengembangan aplikasi ini saat develop
-1. Port alerady in use saat menjalankan `docker-compose up` ?
+1. **Port alerady in use saat menjalankan `docker-compose up` ?**<br/>
    ini bisa di atasi dengan `docker stop $(docker ps -aq)` ini akan menghentikan semua
    container yang jalan, sehingga port bisa di pakai
-2. File `.env` tidak di tempukan saat sistem berjalan ?
+2. **File `.env` tidak di tempukan saat sistem berjalan ?**<br/>
    Pastikan `.env` berada pada root project directory
-3. Gagal saat melakukan migrasi yang di lakukan oleh GORM:?
+3. **Gagal saat melakukan migrasi yang di lakukan oleh GORM:?**<br/>
    Pertama export data di database ke sql file dan drop semua
    tabel di dalam database, dan coba menjalankan program lagi
