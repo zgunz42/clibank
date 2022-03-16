@@ -1,0 +1,32 @@
+package users
+
+import (
+	"github.com/stretchr/testify/mock"
+	"gorm.io/gorm"
+)
+
+type MockUserRepository struct {
+	mock.Mock
+}
+
+func (m *MockUserRepository) Create(data CreateUserDto) (User, error) {
+	args := m.Called(data)
+	return args.Get(0).(User), args.Error(1)
+}
+
+func (m *MockUserRepository) Init(db *gorm.DB) {
+	m.Called(db)
+}
+func (m *MockUserRepository) FindByID(id int) (*User, error) {
+	args := m.Called(id)
+	return args.Get(0).(*User), args.Error(1)
+}
+func (m *MockUserRepository) FindByPhone(phone string) ([]*User, error) {
+	args := m.Called(phone)
+	return args.Get(0).([]*User), args.Error(1)
+}
+
+func (m *MockUserRepository) CheckPin(phone string, pin string) (bool, error) {
+	args := m.Called(phone, pin)
+	return args.Bool(0), args.Error(1)
+}
