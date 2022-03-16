@@ -14,6 +14,7 @@ type IUserRepository interface {
 	FindByPhone(phone string) ([]*User, error)
 	Create(user CreateUserDto) (User, error)
 	CheckPin(phone string, pin string) (bool, error)
+	Update(phone string, data UpdateUserDto) (User, error)
 }
 
 type UserRepository struct {
@@ -84,4 +85,28 @@ func (r *UserRepository) CheckPin(phone string, pin string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (r *UserRepository) Update(phone string, data UpdateUserDto) (User, error) {
+	account := &Account{}
+	err := r.db.Joins("User").Where("phone_number = ?", phone).First(&account).Error
+	if err != nil {
+		return User{}, err
+	}
+
+	if data.Name != "" {
+		// update account name
+		account.Name = data.Name
+		err = r.db.Save(&account).Error
+		if err != nil {
+			return User{}, err
+		}
+	}
+	if data.Pin != "" && len(data.Pin) == 6 {
+		user := account.User
+		user.Pin = data.Pin
+		err = r.db.Save(user).Error
+	}
+
+	return account.User, err
 }

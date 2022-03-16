@@ -5,9 +5,21 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestUserService(t *testing.T) {
+type UserServiceTestSuite struct {
+	suite.Suite
+	service *UserService
+}
+
+func (suite *UserServiceTestSuite) SetupTest() {
+	repo := new(MockUserRepository)
+	suite.service = new(UserService)
+	suite.service.userRepository = repo
+}
+
+func (suite *UserServiceTestSuite) TestCreateUser() {
 	mockRepo := &MockUserRepository{}
 	service := &UserService{
 		userRepository: mockRepo,
@@ -17,6 +29,10 @@ func TestUserService(t *testing.T) {
 
 	user, err := service.CreateUser(CreateUserDto{})
 
-	assert.Nil(t, err)
-	assert.NotNil(t, user)
+	assert.Nil(suite.T(), err)
+	assert.NotNil(suite.T(), user)
+}
+
+func TestUserService(t *testing.T) {
+	suite.Run(t, new(UserServiceTestSuite))
 }

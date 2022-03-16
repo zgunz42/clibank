@@ -6,3 +6,8 @@ type CreateUserDto struct {
 	Pin        string `json:"pin"`
 	ConfirmPin string `json:"confirm_pin"`
 }
+
+type UpdateUserDto struct {
+	Name string `json:"name"`
+	Pin  string `json:"pin"`
+}
