@@ -30,3 +30,8 @@ func (m *MockUserRepository) CheckPin(phone string, pin string) (bool, error) {
 	args := m.Called(phone, pin)
 	return args.Bool(0), args.Error(1)
 }
+
+func (m *MockUserRepository) Update(phone string, data UpdateUserDto) (User, error) {
+	args := m.Called(phone, data)
+	return args.Get(0).(User), args.Error(1)
+}
