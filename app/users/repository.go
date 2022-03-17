@@ -11,7 +11,7 @@ import (
 type IUserRepository interface {
 	Init(db *gorm.DB)
 	FindByID(id int) (*User, error)
-	FindByPhone(phone string) ([]*User, error)
+	FindByPhone(phone string) (*User, error)
 	Create(user CreateUserDto) (User, error)
 	CheckPin(phone string, pin string) (bool, error)
 	Update(phone string, data UpdateUserDto) (User, error)
@@ -31,10 +31,10 @@ func (u *UserRepository) FindByID(id int) (*User, error) {
 	return &user, err
 }
 
-func (u *UserRepository) FindByPhone(phone string) ([]*User, error) {
-	var users []*User
-	err := u.db.Where("phone = ?", phone).Find(&users).Error
-	return users, err
+func (u *UserRepository) FindByPhone(phone string) (*User, error) {
+	var user *User
+	err := u.db.Joins("Account").Where(&User{PhoneNumber: phone}).Find(&user).Error
+	return user, err
 }
 
 func (u *UserRepository) Create(data CreateUserDto) (User, error) {
@@ -83,6 +83,7 @@ func (r *UserRepository) Update(phone string, data UpdateUserDto) (User, error) 
 	if data.Name != "" {
 		// update account name
 		user.Account.Name = data.Name
+		err = r.db.Save(&user.Account).Error
 		if err != nil {
 			return User{}, err
 		}

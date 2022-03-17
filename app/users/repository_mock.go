@@ -21,9 +21,9 @@ func (m *MockUserRepository) FindByID(id int) (*User, error) {
 	args := m.Called(id)
 	return args.Get(0).(*User), args.Error(1)
 }
-func (m *MockUserRepository) FindByPhone(phone string) ([]*User, error) {
+func (m *MockUserRepository) FindByPhone(phone string) (*User, error) {
 	args := m.Called(phone)
-	return args.Get(0).([]*User), args.Error(1)
+	return args.Get(0).(*User), args.Error(1)
 }
 
 func (m *MockUserRepository) CheckPin(phone string, pin string) (bool, error) {
