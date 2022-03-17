@@ -11,5 +11,4 @@ type Account struct {
 	PhoneNumber string         `gorm:"type:varchar(12);uniqueIndex;not null" json:"phone_number"`
 	WalletID    uint           `json:"-"`
 	Wallet      wallets.Wallet `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	User        *User          `gorm:"foreignKey:PhoneNumber;references:PhoneNumber;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
