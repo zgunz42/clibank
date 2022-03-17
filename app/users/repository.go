@@ -67,7 +67,7 @@ func (u *UserRepository) Create(data CreateUserDto) (User, error) {
 		account := &Account{
 			PhoneNumber: data.Phone,
 			Wallet:      *wallet,
-			User:        *user,
+			User:        user,
 		}
 		if err := tx.Create(account).Error; err != nil {
 			return err
@@ -108,5 +108,5 @@ func (r *UserRepository) Update(phone string, data UpdateUserDto) (User, error) 
 		err = r.db.Save(user).Error
 	}
 
-	return account.User, err
+	return *account.User, err
 }

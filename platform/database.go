@@ -27,6 +27,6 @@ func (db *Database) Connect(url interface{}) {
 
 func (db Database) Migrate() {
 	db.AutoMigrate(&wallets.Wallet{})
-	db.AutoMigrate(&users.Account{})
 	db.AutoMigrate(&users.User{})
+	db.AutoMigrate(&users.Account{})
 }
