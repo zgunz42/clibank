@@ -40,41 +40,27 @@ func (u *UserRepository) FindByPhone(phone string) ([]*User, error) {
 func (u *UserRepository) Create(data CreateUserDto) (User, error) {
 
 	user := &User{
-		Email: data.Email,
-		Pin:   data.Pin,
+		Email:       data.Email,
+		Pin:         data.Pin,
+		PhoneNumber: data.Phone,
+		Account: &Account{
+			Name: "",
+			Wallet: wallets.Wallet{
+				Balance:  0,
+				Status:   "active",
+				Currency: "IDR",
+			},
+		},
 	}
 
-	err := u.db.Transaction(func(tx *gorm.DB) error {
-		err := tx.Create(user).Error
-		if err != nil {
-			var mysqlError *mysql.MySQLError
-			if errors.As(err, &mysqlError) && mysqlError.Number == 1062 {
-				return errors.New("email already exist")
-			}
-			return err
+	err := u.db.Create(user).Error
+	if err != nil {
+		var mysqlError *mysql.MySQLError
+		if errors.As(err, &mysqlError) && mysqlError.Number == 1062 {
+			return *user, errors.New("email already exist")
 		}
-
-		wallet := &wallets.Wallet{
-			Balance:  0,
-			Status:   "active",
-			Currency: "IDR",
-		}
-
-		if err := tx.Create(wallet).Error; err != nil {
-			return err
-		}
-
-		account := &Account{
-			PhoneNumber: data.Phone,
-			Wallet:      *wallet,
-			User:        *user,
-		}
-		if err := tx.Create(account).Error; err != nil {
-			return err
-		}
-
-		return nil
-	})
+		return *user, err
+	}
 	return *user, err
 }
 
@@ -88,25 +74,23 @@ func (r *UserRepository) CheckPin(phone string, pin string) (bool, error) {
 }
 
 func (r *UserRepository) Update(phone string, data UpdateUserDto) (User, error) {
-	account := &Account{}
-	err := r.db.Joins("User").Where("phone_number = ?", phone).First(&account).Error
+	user := &User{}
+	err := r.db.Joins("Account").Where("phone_number = ?", phone).First(&user).Error
 	if err != nil {
 		return User{}, err
 	}
 
 	if data.Name != "" {
 		// update account name
-		account.Name = data.Name
-		err = r.db.Save(&account).Error
+		user.Account.Name = data.Name
 		if err != nil {
 			return User{}, err
 		}
 	}
 	if data.Pin != "" && len(data.Pin) == 6 {
-		user := account.User
 		user.Pin = data.Pin
 		err = r.db.Save(user).Error
 	}
 
-	return account.User, err
+	return *user, err
 }
