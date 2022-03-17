@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/ALTA-BE7-I-Kadek-Adi-Gunawan/clibank/app/wallets"
 	"github.com/go-sql-driver/mysql"
@@ -15,6 +16,7 @@ type IUserRepository interface {
 	Create(user CreateUserDto) (User, error)
 	CheckPin(phone string, pin string) (bool, error)
 	Update(phone string, data UpdateUserDto) (User, error)
+	Delete(phone string) error
 }
 
 type UserRepository struct {
@@ -94,4 +96,14 @@ func (r *UserRepository) Update(phone string, data UpdateUserDto) (User, error) 
 	}
 
 	return *user, err
+}
+
+func (r *UserRepository) Delete(phone string) error {
+	err := r.db.Unscoped().Where("id = (select wallet_id from accounts where phone_number = ?)", phone).Delete(&wallets.Wallet{}).Error
+	if err != nil {
+		return err
+	}
+	err = r.db.Unscoped().Where("phone_number = ?", phone).Delete(&User{}).Error
+	fmt.Println(err)
+	return err
 }
