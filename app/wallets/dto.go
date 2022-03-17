@@ -7,3 +7,13 @@ type AddWalletRequest struct {
 	CreatedAt string
 	UpdatedAt string
 }
+
+type WalleFilter struct {
+	PhoneNumber string
+}
+
+type UpdateWalletDto struct {
+	ID       uint
+	Balance  float64
+	Currency string
+}

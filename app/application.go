@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ALTA-BE7-I-Kadek-Adi-Gunawan/clibank/app/topups"
 	"github.com/ALTA-BE7-I-Kadek-Adi-Gunawan/clibank/app/users"
+	"github.com/ALTA-BE7-I-Kadek-Adi-Gunawan/clibank/app/wallets"
 	"github.com/ALTA-BE7-I-Kadek-Adi-Gunawan/clibank/cmd"
 	"github.com/ALTA-BE7-I-Kadek-Adi-Gunawan/clibank/platform"
 )
@@ -36,23 +38,40 @@ func (a *Application) Init(db *platform.Database, c *platform.Configuration) {
 	a.choice = -1
 	a.config = c
 	a.ctx = context.Background()
+
+	// init all repositores
 	userRepo := &users.UserRepository{}
+	topupRepo := &topups.TopupRepository{}
+	walletRepo := &wallets.WalletRepository{}
 	userRepo.Init(db.DB)
+	topupRepo.Init(db.DB)
+	walletRepo.Init(db.DB)
+
+	// init all services
 	userService := &users.UserService{}
+	topupService := &topups.TopupService{}
+	walletService := &wallets.WalletService{}
 	userService.Init(userRepo)
+	walletService.Init(walletRepo)
+	topupService.Init(walletService, topupRepo)
+
+	// seed data
+	topupService.SeedOption()
 
 	a.ctx = context.WithValue(a.ctx, platform.UserRepositoryKey, *userRepo)
 	a.ctx = context.WithValue(a.ctx, platform.UserServiceKey, *userService)
+	a.ctx = context.WithValue(a.ctx, platform.TopupRepositoryKey, *topupRepo)
+	a.ctx = context.WithValue(a.ctx, platform.TopupServiceKey, *topupService)
 
 	a.cmds = map[int8]Command{
 		1: cmd.CmdAddUser{},
 		2: &cmd.CmdUpdateUser{},
 		3: cmd.CmdDeleteUser{},
 		4: &cmd.CmdGetUser{},
-		6: cmd.CmdAccoutnTopUp{},
-		7: cmd.CmdTransferBalance{},
-		8: cmd.CmdHistoryTopUp{},
-		9: cmd.CmdHistoryTransaction{},
+		5: &cmd.CmdAccoutnTopUp{},
+		6: cmd.CmdTransferBalance{},
+		7: cmd.CmdHistoryTopUp{},
+		8: cmd.CmdHistoryTransaction{},
 	}
 }
 func (a Application) ShowHeader() string {
