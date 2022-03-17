@@ -15,14 +15,14 @@ func (cmd CmdAddUser) Execute(ctx context.Context) error {
 	service := ctx.Value(platform.UserServiceKey)
 	user := users.CreateUserDto{}
 
-	fmt.Print("Enter Phone Number: ")
-	fmt.Scanln(&user.Phone)
-	fmt.Print("Enter your email: ")
-	fmt.Scanln(&user.Email)
-	fmt.Print("Enter your pin: ")
-	fmt.Scanln(&user.Pin)
-	fmt.Print("Enter your pin again: ")
-	fmt.Scanln(&user.ConfirmPin)
+	fmt.Println("Enter Phone Number: ")
+	fmt.Scan(&user.Phone)
+	fmt.Println("Enter your email: ")
+	fmt.Scan(&user.Email)
+	fmt.Println("Enter your pin: ")
+	fmt.Scan(&user.Pin)
+	fmt.Println("Enter your pin again: ")
+	fmt.Scan(&user.ConfirmPin)
 
 	var userService users.UserService = service.(users.UserService)
 	userDb, err := userService.CreateUser(user)

@@ -66,7 +66,7 @@ func (a *Application) Init(db *platform.Database, c *platform.Configuration) {
 	a.cmds = map[int8]Command{
 		1: cmd.CmdAddUser{},
 		2: &cmd.CmdUpdateUser{},
-		3: cmd.CmdDeleteUser{},
+		3: &cmd.CmdDeleteUser{},
 		4: &cmd.CmdGetUser{},
 		5: &cmd.CmdAccoutnTopUp{},
 		6: cmd.CmdTransferBalance{},
