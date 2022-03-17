@@ -8,6 +8,7 @@ import (
 type ITopupService interface {
 	Topup(option TopupWalletDTO) error
 	CreateTopupOption(option AddTopupOptionDTO) error
+	GetTopupOptions() ([]TopupOption, error)
 }
 
 type TopupService struct {
@@ -81,4 +82,8 @@ func (s *TopupService) CreateTopupOption(option AddTopupOptionDTO) error {
 		AccNo: option.AccNo,
 	}
 	return s.topupRepo.CreateTopupOption(topupOption)
+}
+
+func (s *TopupService) GetTopupOptions() ([]TopupOption, error) {
+	return s.topupRepo.GetTopupOptions()
 }
