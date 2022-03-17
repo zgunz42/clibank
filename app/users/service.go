@@ -7,6 +7,7 @@ type IUserService interface {
 	GetUsers() ([]*User, error)
 	CreateUser(data CreateUserDto) error
 	UpdateUser(phone string, pin string, data UpdateUserDto) error
+	DeleteUser(phone string) error
 }
 
 type UserService struct {
@@ -33,4 +34,9 @@ func (u *UserService) GetUser(phone string) (*User, error) {
 func (u *UserService) UpdateUser(phone string, pin string, data UpdateUserDto) (User, error) {
 	// update user data
 	return u.userRepository.Update(phone, data)
+}
+
+func (u *UserService) DeleteUser(phone string) error {
+	err := u.userRepository.Delete(phone)
+	return err
 }
